@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import HeaderLinks from './HeaderLinks'
+ 
 import SearchHeader from './SearchHeader'
+import HeaderLinks from './HeaderLinks'
 
 import axios from 'axios'
 import Card from '@mui/material/Card';  //for material card template
@@ -15,6 +16,7 @@ import moment from 'moment';
 import { NavLink } from 'react-router-dom'
 
 
+
 export default function HomePage() {
   
   let [searchName, setSearchName] = useState('')
@@ -22,7 +24,7 @@ export default function HomePage() {
   let [productData, setProductData] = useState('')
   let [displayData, setDisplayData] = useState([])
 
-  const childToParent = (childdata) => {  //get search data from child component 
+  const childToParent = (childdata) => {  //get search data from child component (Search navbar)
     setSearchName(childdata);
   }
 
@@ -82,7 +84,8 @@ export default function HomePage() {
 
 return (
   <div>
-    <HeaderLinks/>
+    <HeaderLinks linkName='Profile' linkTo='/Profile'/>
+
     <SearchHeader childToParent={childToParent}/>
 
     <Container sx={{ py: 2 , margin:"auto"}} maxWidth="md">

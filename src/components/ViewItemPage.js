@@ -2,8 +2,9 @@
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router';
 import axios from 'axios'
+import { useAuth } from './Auth'  //For when logged in
 
-
+import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';  //for material card template
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
@@ -19,24 +20,23 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
-
+import HeaderLinks from './HeaderLinks';
+import PlainHeader from './PlainHeader'
 
 
 export default function ViewItemPage() {
 
-    const { id } = useParams();
+  const auth = useAuth()  //For when logged in
 
-    // console.log(id)
+    const { auction_id } = useParams();
 
     let [displayData, setDisplayData] = useState([])
-
-    // if(category==='Home'||category==='Vehicles'||category==='Clothing'||category==='Sports & Hobbies'){console.log(category)}
 
     useEffect(() => { // get all auction items on page load
         
         var config = {
             method: 'get',
-            url: `http://localhost:4000/findAuctionItem?auction_id=${id}`,
+            url: `http://localhost:4000/findAuctionItem?auction_id=${auction_id}`,
             headers: { }
           };
           
@@ -49,12 +49,51 @@ export default function ViewItemPage() {
             console.log(error);
           });
             
-      },[]) //only run once 
+    },[]) //only run once 
+
+
+    const handleBid = (event)=>{
+
+      event.preventDefault();
+      const data = new FormData(event.currentTarget);
+  
+      const bidPrice = data.get('bidPrice')
+      
+      // place bid
+
+      const bidRequestData = JSON.stringify({
+        "bidder_id": 17,
+        "auction_id": auction_id,
+        "bid": bidPrice
+      });
+      
+      const config = {
+        method: 'patch',
+        url: 'http://localhost:4000/placeBid',
+        headers: { 
+          'Content-Type': 'application/json'
+        },
+        data : bidRequestData
+      };
+      
+      axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+      
+    }
 
 
 
   return (
     <div>
+
+      <HeaderLinks linkName='Home' linkTo='/'/>
+      <PlainHeader/>  
+
         <Container sx={{ py: 2 , margin:"auto"}} maxWidth="md">
    
         <Grid container spacing={4}>
@@ -101,19 +140,35 @@ export default function ViewItemPage() {
 
        
                     </CardContent>
-                    <CardActions>
-                        <FormControl fullWidth sx={{ m: 1 }}>
-                            <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
-                            <OutlinedInput
-                                id="outlined-adornment-amount"
-                                startAdornment={<InputAdornment position="start">$</InputAdornment>}
-                                label="Amount"
-                            />
+
+                    {/* bid option below only if user is logged in */}
+
+                    {(auth.checkUserName()!==null)?
+
+                      <Box component="form" onSubmit={handleBid} noValidate sx={{ m: 3 }}>
+                        <FormControl fullWidth >
+                          <InputLabel htmlFor="outlined-adornment-amount">Bid Price</InputLabel>
+                          <OutlinedInput
+                              id="outlined-adornment-amount"
+                              startAdornment={<InputAdornment position="start">$</InputAdornment>}
+                              name="bidPrice"
+                          />
                         </FormControl>
-                    {/* <Button onClick={handleViewItem} value={item.auction_id} size="small">View</Button> */}
-                    {/* <NavLink to={`/ViewItem/${item.auction_id}`}>View</NavLink> */}
-                    <Button size="small">Bid</Button>
-                  </CardActions>
+                        <Button
+                          type="submit"
+                          fullWidth
+                          variant="contained"
+                          sx={{ mt: 3, mb: 2 }}
+                        >
+                          Place Bid
+                        </Button>
+                      </Box>
+
+                      :
+                      <></>
+                      
+                    }
+
                 </Card>
               </Grid>
 

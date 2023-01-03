@@ -62,7 +62,30 @@ export default function SignInSide() {
       axios(config)
       .then(function (response) { // login success
 
-          auth.login(email)
+          //get user name
+
+          var userData = JSON.stringify({
+            "email": email
+          });
+          
+          var config = {
+            method: 'post',
+            url: 'http://localhost:4000/findUser',
+            headers: { 
+              'Content-Type': 'application/json'
+            },
+            data : userData
+          };
+          
+          axios(config)
+          .then(function (response) {
+            // console.log(response.data[0].user_name);
+            auth.login(response.data[0].user_name)
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+
           navigate(redirectPath, { replace: true }) //nav to home page
 
       })

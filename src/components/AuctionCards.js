@@ -10,75 +10,39 @@ import { Button, CardActionArea, CardActions } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import moment from 'moment';
-import { NavLink } from 'react-router-dom'
+
 
 export default function AuctionCards(props) {
+  
+  console.log(props.seller_id)
 
-    let[category,setCategory]= useState(props.category)
-    let [productData, setProductData] = useState('')
     let [displayData, setDisplayData] = useState([])
-
-    // if(category==='Home'||category==='Vehicles'||category==='Clothing'||category==='Sports & Hobbies'){console.log(category)}
 
     useEffect(() => { // get all auction items on page load
 
         const options = {
             method: 'GET',
-            url: 'http://localhost:4000/findAllAuctionItems',
+            url: 'http://localhost:4000/findAllAuctionItems?user_id='+props.seller_id,
     
         };
           
         axios.request(options)
-            .then(res => {setProductData(res.data);setDisplayData(res.data)})
+            .then(res => {setDisplayData(res.data)})
             .catch(err => {
                 console.log(err)
             })
+
             
-      },[]) //only run once 
-
-      useEffect(()=>{   // once category is selected, only show items in category
-        if(category==='All Categories'){setDisplayData(productData)}
-        else{
-        setDisplayData([])  //delete previous entries
-    
-        for(let i in productData){
-    
-          let currentCategory = productData[i].category
-    
-          if(currentCategory===category){
-            setDisplayData(oldArray => [...oldArray, productData[i]]);
-          }
-          
-        }
-      }
-      },[category])
-
-      useEffect(() => {
-        // console.log(displayData[0].image_path)
-    },[displayData])
+      },[]) //only run once on page load
 
   return (
     <div>
 
-
-      <Container sx={{ py: 2 , margin:"auto"}} maxWidth="md">
-        <Grid container spacing={1} alignItems="center" justifyContent="center">
-          <Button size="small" onClick={()=>{setCategory('Home')}}>Home</Button>
-          <Button size="small" onClick={()=>{setCategory('Vehicles')}}>Vehicles</Button>
-          <Button size="small" onClick={()=>{setCategory('Clothing')}}>Clothing</Button>
-          <Button size="small" onClick={()=>{setCategory('Sports & Hobbies')}}>Sports & Hobbies</Button>
-          <Button size="small" onClick={()=>{setCategory('All Categories')}}>All Categories</Button>
-        </Grid>
-
-
-        <Typography sx={{ py: 6 }}variant="h5" component="h2" textAlign='center'>
-                    {category}
-                    </Typography> 
+      <Container sx={{ py: 4 , margin:"auto"}} maxWidth="md">
 
         <Grid container spacing={4}>
 
             {displayData.map((item, index) => (
-
 
             <Grid item key={item.auction_id} xs={12} sm={6} md={4}>
                 <Card
@@ -120,11 +84,7 @@ export default function AuctionCards(props) {
 
        
                   </CardContent>
-                  <CardActions>
-                    {/* <Button onClick={handleViewItem} value={item.auction_id} size="small">View</Button> */}
-                    <NavLink to={`/ViewItem/${item.auction_id}`}>View</NavLink>
-                    {/* <Button size="small">Quick Bid</Button> */}
-                  </CardActions>
+
                 </Card>
               </Grid>
 

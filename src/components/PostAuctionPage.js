@@ -1,5 +1,5 @@
 
-import * as React from 'react'; //from material template (sign in)
+import React, { useState, useEffect } from 'react'
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -20,6 +20,15 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
 import axios from 'axios'
+import { useAuth } from './Auth'  // Get userName
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputAdornment from '@mui/material/InputAdornment';
+  
+import { useNavigate, useLocation } from 'react-router-dom'
+import PlainHeader from './PlainHeader'
+import HeaderLinks from './HeaderLinks'
+
+
 
 
 // function Copyright(props) {
@@ -43,7 +52,11 @@ export default function SignIn() {
     const pickerStartDate = moment().add(1, 'day'); // set start date for date picker
     const [auctionEndTime, setAuctionEndTime] = React.useState(pickerStartDate); //for datepicker
     const [category, setCategory] = React.useState('');
-
+    const [userID, setUserID] = React.useState(0);
+    const navigate = useNavigate()
+    const location = useLocation()
+    const auth = useAuth()  // Get userName
+    
 
     const handleCategoryChange = (event) => {
       setCategory(event.target.value);
@@ -54,34 +67,68 @@ export default function SignIn() {
 
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-        "Title is ": data.get('Title'),
-       "Location":data.get('Location'),
-       "Description is ": data.get('Description'),
-       "Category is ":category,
-      "auctionEndTime is ":JSON.stringify(moment(auctionEndTime._d).format("YYYY-MM-DD HH:mm:ss"))    //convert date to string 
-    });
+
+    // console.log(Number(data.get('Price')))
 
     const itemData = { 
-        "seller_user_id":5,
-        "highest_bidder_id":5,
+        "seller_user_id":userID,
+        "highest_bidder_id":null,
         "category":category,
         "image_path":"tbc",
         "auction_title":data.get('Title'),
         "item_location":data.get('Location'),
         "item_description":data.get('Description'),
-        "current_price":1,
+        "current_price":Number(data.get('Price')),
         "end_date":moment(auctionEndTime._d).format("YYYY-MM-DD HH:mm:ss")
     };
     axios.post('http://localhost:4000/addAuctionItem', itemData)
-    .then(response => {console.log(response.data);console.log('The auction ID is '+ response.data[2])});    //need to navigate to image upload page with auction id
+    .then(response => {
+      // console.log(response.data);
+      // console.log('The auction ID is '+ response.data[2])
 
-
+      const redirectPath = location.state?.path || '/UploadImage'  //define where to navigate to after submit 
+      navigate(redirectPath, {state:{auction_id:response.data[2]}, replace: true}) //nav to upload images page
+    
+    })    //need to navigate to image upload page with auction id
 
   };
 
+  useEffect(()=>{
+
+    //load user details on page load
+
+    var userData = JSON.stringify({
+      "user_name": auth.checkUserName()
+
+    });
+    
+    var config = {
+      method: 'post',
+      url: 'http://localhost:4000/findUser',
+      headers: { 
+        'Content-Type': 'application/json'
+      },
+      data : userData
+    };
+    
+    axios(config)
+    .then(function (response) {
+      // console.log(JSON.stringify(response.data[0].user_id));
+      setUserID(response.data[0].user_id) 
+
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+
+  },[])
+
+
   return (
     <ThemeProvider theme={theme}>
+        <HeaderLinks linkName='Profile' linkTo='/Profile'/>
+        <PlainHeader/>
+
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -151,7 +198,17 @@ export default function SignIn() {
               maxRows={10}
               name="Description"
               autoFocus
+              sx={{ pb: 2 }}
             />
+
+            <FormControl fullWidth sx={{ pb: 2 }}>
+              <InputLabel htmlFor="outlined-adornment-amount">Start Bidding at</InputLabel>
+              <OutlinedInput
+                  id="outlined-adornment-amount"
+                  startAdornment={<InputAdornment position="start">$</InputAdornment>}
+                  name="Price"
+              />
+            </FormControl>
 
             {/* date/time picker starts here */}
 

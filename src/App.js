@@ -12,7 +12,6 @@ const ProfilePage = React.lazy(()=>import('./components/ProfilePage'))
 const PostAuctionPage = React.lazy(()=>import('./components/PostAuctionPage'))
 const UploadImagePage = React.lazy(()=>import('./components/UploadImagePage'))
 const ViewItemPage = React.lazy(()=>import('./components/ViewItemPage'))
-
 const PageNotFound = React.lazy(()=>import('./components/PageNotFound'))
 
 function App() {
@@ -78,7 +77,7 @@ function App() {
           />
 
           <Route
-            path='/ViewItem/:id'
+            path='/ViewItem/:auction_id'
             element={
               <React.Suspense fallback={<Loading />}>
                 <ViewItemPage />
