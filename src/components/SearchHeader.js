@@ -6,10 +6,10 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
-import MenuIcon from '@mui/icons-material/Menu';
+import StoreIcon from '@mui/icons-material/Store';
 import SearchIcon from '@mui/icons-material/Search';
-
 import { Button } from '@mui/material';
+import { useNavigate, useLocation } from 'react-router-dom'
 
 // functions for search bar start here
 
@@ -58,21 +58,30 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function SearchAppBar({childToParent}) {
 
   let[searchQuery,setSearchQuery]=useState('')
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  const handleIconClick = ()=>{
+
+    const redirectPath = location.state?.path || '/'  //nav to home page 
+    navigate(redirectPath, {replace: false}) 
+
+  }
 
   return (
-    <Box sx={{ flexGrow: 1 }} >
+    <Box >
       <AppBar position="static">
      
         <Toolbar>
-          {/* <IconButton
+          <IconButton
             size="large"
             edge="start"
             color="inherit"
-            aria-label="open drawer"
+            onClick={()=>{handleIconClick()}}
             sx={{ mr: 2 }}
           >
-            <MenuIcon />
-          </IconButton> */}
+            <StoreIcon />
+          </IconButton>
           <Typography
             variant="h6"
             noWrap
@@ -83,9 +92,7 @@ export default function SearchAppBar({childToParent}) {
           </Typography>
           
           <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
+
             <StyledInputBase
               placeholder="Search…"
               inputProps={{ 'aria-label': 'search' }}
@@ -95,7 +102,7 @@ export default function SearchAppBar({childToParent}) {
             />
           </Search>
 
-          <Button onClick={() => childToParent(searchQuery)}>Click Child</Button>
+          <Button variant="filled" color="success" onClick={() => childToParent(searchQuery)}><SearchIcon /></Button>
 
         </Toolbar>
        

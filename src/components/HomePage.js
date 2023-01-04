@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
  
 import SearchHeader from './SearchHeader'
 import HeaderLinks from './HeaderLinks'
+import HomeAuctionCards from './cards/HomeAuctionCards'
 
 import axios from 'axios'
 import Card from '@mui/material/Card';  //for material card template
@@ -102,60 +103,21 @@ return (
                   {category}
                   </Typography> 
 
-      <Grid container spacing={4}>
+      <Grid container rowSpacing={2}>
 
-          {displayData.map((item, index) => (
+          {displayData &&
 
+            displayData.map((item, index) => (
 
-          <Grid item key={item.auction_id} xs={12} sm={6} md={4}>
-              <Card
-                sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-              >
-                <Typography variant="h5" component="h2" textAlign='center'>
-                  {item.auction_title}
-                </Typography>
-
-                <CardMedia
-                  component="img"
-                  sx={{pt: 2}}
-                  image={item.image_path}
-                  alt="random"
-                />
-
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <Typography gutterBottom variant="body1">
-                    {item.category}
-                  </Typography>
-                  
-     
-                  <Typography gutterBottom variant="body2">
-                    {item.item_description}
-                  </Typography>
-                  
-       
-                  <Typography gutterBottom variant="body2">
-                    Location: {item.item_location}
-                  </Typography>
-
-                  <Typography gutterBottom variant="body2">
-                    Current Bid: ${item.current_price}
-                  </Typography>
-
-                  <Typography gutterBottom variant="body2">
-                    End date: {moment(item.end_date).format('DD.MM.YYYY HH:mm')}
-                  </Typography>
-
-     
-                </CardContent>
-                <CardActions>
-                  {/* <Button onClick={handleViewItem} value={item.auction_id} size="small">View</Button> */}
-                  <NavLink to={`/ViewItem/${item.auction_id}`}>View</NavLink>
-                  {/* <Button size="small">Quick Bid</Button> */}
-                </CardActions>
-              </Card>
+            <Grid item key={item.auction_id} xs={12} md={6} lg={4}>
+                
+                <HomeAuctionCards content={displayData[index]}/>
+                
             </Grid>
 
-          ))} 
+            )) 
+          
+          }
           </Grid>
       </Container>
   </div>

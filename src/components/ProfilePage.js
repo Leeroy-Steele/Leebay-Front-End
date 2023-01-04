@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react'
-
 import PlainHeader from './PlainHeader'
 import HeaderLinks from './HeaderLinks'
-import AuctionCards from './AuctionCards'
-
-import { useAuth } from './Auth'  //For when logged in
+import BiddingOnAuctionCards from './cards/BiddingOnAuctionCards'
+import MyAuctionCards from './cards/MyAuctionCards'
+import WonAuctionCards from './cards/WonAuctionCards'
+import { useAuth } from './Auth'
 import axios from 'axios'
-
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
@@ -55,8 +53,6 @@ export default function ProfilePage() {
     .catch(function (error) {
       console.log(error);
     });
-
-
 
   },[])
 
@@ -118,12 +114,11 @@ export default function ProfilePage() {
 
         <NavLink sx={{ margin: 'auto',py: 5  }} to={`/PostAuction`}>Post Auction</NavLink>
 
-        {/* insert auctions here */}
-        {(userID!==null)? //  if logged in show profile 
-          <AuctionCards seller_id={userID}/>
+        {(userID!==null)? //  show when user data has been retrived (Stops backend error) 
+          <MyAuctionCards seller_id={userID}/>
           // <></>
           :
-          <p>No user id yet!!!</p>
+          <p>Not logged in</p>
         }
         
 
@@ -137,23 +132,32 @@ export default function ProfilePage() {
           >
             Currently Bidding on
         </Typography>
-
-    
-
-        {/* insert auctions here */}
-
-
+        
+        {(userID!==null)? //  show when user data has been retrived (Stops backend error) ****** first create bidding history data ******* 
+          <BiddingOnAuctionCards bidder_id={userID}/>
+          // <></>
+          :
+          <p>Not logged in</p>
+        }
+        
       </Box>
 
       <Box sx={{ textAlign: 'center',py: 2  }}>
-
         <Typography
-          sx={{ textAlign: 'center',py: 2  }}
-          variant="h5"
-          component="div"
-        >
-          Won Auctions
+            sx={{ py: 2  }}
+            variant="h5"
+            component="div"
+          >
+            Won Auctions
         </Typography>
+        
+        {(userID!==null)? //  show when user data has been retrived (Stops backend error) 
+          <WonAuctionCards buyer_id={userID}/>
+          // <></>
+          :
+          <p>Not logged in</p>
+        }
+        
       </Box>
 
     </div>

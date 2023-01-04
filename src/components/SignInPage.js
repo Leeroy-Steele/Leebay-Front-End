@@ -15,7 +15,9 @@ import { useAuth } from './Auth'
 import { useNavigate, useLocation } from 'react-router-dom'
 import axios from 'axios'
 
+
 const theme = createTheme();
+
 
 export default function SignInSide() {
 
@@ -80,7 +82,7 @@ export default function SignInSide() {
           axios(config)
           .then(function (response) {
             // console.log(response.data[0].user_name);
-            auth.login(response.data[0].user_name)
+            auth.login(response.data[0].user_name,response.data[0].user_id)
           })
           .catch(function (error) {
             console.log(error);

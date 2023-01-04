@@ -5,24 +5,31 @@ const AuthContext = createContext(null)
 export const AuthProvider = ({ children }) => {
 
   const [userName, setUser] = useState(null)
+  const [userID, setUserID] = useState(null)
 
   // console.log('Auth Provider function')
 
-  const login = userEmail => {
+  const login = (userEmail,user_ID) => {
     // console.log('login attempt made')
     setUser(userEmail)
+    setUserID(user_ID)
   }
 
   const logout = () => {
     setUser(null)
+    setUserID(null)
   }
 
   const checkUserName = () => {
     return userName
   }
 
+  const checkUserID = () => {
+    return userID
+  }
+
   return (
-    <AuthContext.Provider value={{ userName, login, logout, checkUserName }}>
+    <AuthContext.Provider value={{ userName, login, logout, checkUserName,checkUserID }}>
       {children}
     </AuthContext.Provider>
   )

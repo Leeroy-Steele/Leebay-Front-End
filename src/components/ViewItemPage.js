@@ -10,7 +10,15 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { Button, CardActionArea, CardActions } from '@mui/material';
-
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import Avatar from '@mui/material/Avatar';
+import Divider from '@mui/material/Divider';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import ScheduleIcon from '@mui/icons-material/Schedule';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import moment from 'moment';
@@ -23,14 +31,42 @@ import FormControl from '@mui/material/FormControl';
 import HeaderLinks from './HeaderLinks';
 import PlainHeader from './PlainHeader'
 
+import Backdrop from '@mui/material/Backdrop';
+import Modal from '@mui/material/Modal';
+import Fade from '@mui/material/Fade';
+import AuctionComments from './AuctionComments';
+
+
+//for modal styling
+
+const modalStyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 300,
+  bgcolor: 'background.paper',
+  border: '1px solid #000',
+  boxShadow: 24,
+  p: 8,
+};
+
+
 
 export default function ViewItemPage() {
 
   const auth = useAuth()  //For when logged in
 
-    const { auction_id } = useParams();
+  const { auction_id } = useParams();
 
-    let [displayData, setDisplayData] = useState([])
+  let [displayData, setDisplayData] = useState([])
+  let [bidPrice, setBidPrice] = useState(0)
+
+  // for modal
+
+  const [open, setOpen] = React.useState(false);  
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
     useEffect(() => { // get all auction items on page load
         
@@ -42,7 +78,7 @@ export default function ViewItemPage() {
           
           axios(config)
           .then(function (response) {
-            console.log(response.data[0].auction_title);
+            // console.log(response.data[0].auction_title);
             setDisplayData(response.data)
           })
           .catch(function (error) {
@@ -53,40 +89,47 @@ export default function ViewItemPage() {
 
 
     const handleBid = (event)=>{
-
+      
       event.preventDefault();
       const data = new FormData(event.currentTarget);
-  
       const bidPrice = data.get('bidPrice')
       
       // place bid
 
-      const bidRequestData = JSON.stringify({
-        "bidder_id": 17,
-        "auction_id": auction_id,
-        "bid": bidPrice
-      });
-      
-      const config = {
-        method: 'patch',
-        url: 'http://localhost:4000/placeBid',
-        headers: { 
-          'Content-Type': 'application/json'
-        },
-        data : bidRequestData
-      };
-      
-      axios(config)
-      .then(function (response) {
-        console.log(JSON.stringify(response.data));
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-      
+      if(bidPrice>displayData[0].current_price){
+
+        const bidRequestData = JSON.stringify({
+          "bidder_id": auth.checkUserID(),
+          "auction_id": auction_id,
+          "bid": bidPrice
+        });
+        
+        const config = {
+          method: 'patch',
+          url: 'http://localhost:4000/placeBid',
+          headers: { 
+            'Content-Type': 'application/json'
+          },
+          data : bidRequestData
+        };
+        
+        axios(config)
+        .then(function (response) {
+          console.log(JSON.stringify(response.data));
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+        setBidPrice(bidPrice)
+        handleOpen()  //open modal for successfull bid
+        
+      }
+      else{
+        alert("bid must be higher than "+displayData[0].current_price)
+      }
+
     }
-
-
 
   return (
     <div>
@@ -94,87 +137,159 @@ export default function ViewItemPage() {
       <HeaderLinks linkName='Home' linkTo='/'/>
       <PlainHeader/>  
 
-        <Container sx={{ py: 2 , margin:"auto"}} maxWidth="md">
-   
-        <Grid container spacing={4}>
+      <Container sx={{ py: 3 , margin:"auto"}} maxWidth="sm">
+  
+      <Grid container spacing={4}>
 
-            {displayData.map((item, index) => (
+          {displayData.map((item, index) => (
 
             <Grid item key={item.auction_id} xs={12}>
-                <Card
-                  sx={{ height: '100%', display: 'flex', flexDirection: 'column', maxWidth:'800px' }}
-                >
-                  <Typography variant="h5" component="h2" textAlign='center'>
-                    {item.auction_title}
+              <Card
+                sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+              >
+                <Typography sx={{pt: 2}} variant="h4" component="h2" textAlign='center'>
+                  {item.auction_title}
+                </Typography>
+
+                <CardMedia
+                  component="img"
+                  sx={{pt: 2}}
+                  image={item.image_path}
+                  alt="random"
+                />
+
+                <CardContent sx={{ flexGrow: 1 }}>
+  
+                  
+                  <Typography gutterBottom variant="body2"  sx={{m:2}}>
+                  {item.item_description}
                   </Typography>
+                  
+                  <List
+                    sx={{
+                      width: '100%',
+                      // maxWidth: 360,
+                      bgcolor: 'background.paper',
+                    }}
+                  >
 
-                  <CardMedia
-                    component="img"
-                    sx={{pt: 2}}
-                    image={item.image_path}
-                    alt="random"
-                  />
+                    <Divider component="li" />
 
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography gutterBottom variant="body1">
-                      {item.category}
-                    </Typography>
-                    
-       
-                    <Typography gutterBottom variant="body2">
-                      {item.item_description}
-                    </Typography>
-                    
-         
-                    <Typography gutterBottom variant="body2">
-                      Location: {item.item_location}
-                    </Typography>
+                    <ListItem>
+                      <ListItemAvatar>
+                        <Avatar>
+                          <LocationOnIcon />
+                        </Avatar>
+                      </ListItemAvatar>
+                      <ListItemText primary="Location" secondary={item.item_location} />
+                    </ListItem>
 
-                    <Typography gutterBottom variant="body2">
-                      Current Bid: ${item.current_price}
-                    </Typography>
+                    <Divider variant="inset" component="li" />
 
-                    <Typography gutterBottom variant="body2">
-                      End date: {moment(item.end_date).format('DD.MM.YYYY HH:mm')}
-                    </Typography>
+                    <ListItem>
+                      <ListItemAvatar>
+                        <Avatar>
+                          <AttachMoneyIcon />
+                        </Avatar>
+                      </ListItemAvatar>
+                      <ListItemText primary="Current Price" secondary={"$"+ item.current_price} />
+                    </ListItem>
 
-       
-                    </CardContent>
+                    <Divider variant="inset" component="li" />
 
-                    {/* bid option below only if user is logged in */}
+                    <ListItem>
+                      <ListItemAvatar>
+                        <Avatar>
+                          <ScheduleIcon />
+                        </Avatar>
+                      </ListItemAvatar>
+                      <ListItemText primary="Auction Ends" secondary={moment(item.end_date).format('DD.MM.YYYY HH:mm')} />
+                    </ListItem>
 
-                    {(auth.checkUserName()!==null)?
+                  </List>
 
-                      <Box component="form" onSubmit={handleBid} noValidate sx={{ m: 3 }}>
-                        <FormControl fullWidth >
-                          <InputLabel htmlFor="outlined-adornment-amount">Bid Price</InputLabel>
-                          <OutlinedInput
-                              id="outlined-adornment-amount"
-                              startAdornment={<InputAdornment position="start">$</InputAdornment>}
-                              name="bidPrice"
-                          />
-                        </FormControl>
-                        <Button
-                          type="submit"
-                          fullWidth
-                          variant="contained"
-                          sx={{ mt: 3, mb: 2 }}
-                        >
-                          Place Bid
-                        </Button>
-                      </Box>
+                <Divider />
 
-                      :
-                      <></>
-                      
-                    }
+                {/* bid option below only if user is logged in */}
 
-                </Card>
-              </Grid>
+                {(auth.checkUserName()!==null)?
 
-            ))} 
+                  <Box display='flex' component="form" onSubmit={handleBid} noValidate sx={{ mx:'auto',my: 1,maxWidth:300 }} >
+                    <FormControl fullWidth sx={{ mt: 2 }} >
+                      {/* <InputLabel htmlFor="outlined-adornment-amount">Bid Price</InputLabel> */}
+                      <OutlinedInput
+                          id="outlined-adornment-amount"
+                          startAdornment={<InputAdornment position="start"> $</InputAdornment>}
+                          name="bidPrice"
+                          placeholder= {item.current_price + 1}
+                          sx={{height:37}}
+                      />
+                    </FormControl>
+                    <Button
+                      type="submit"
+                      fullWidth
+                      variant="contained"
+                      sx={{ mt: 2, mb: 2 }}
+                    >
+                      Place Bid
+                    </Button>
+                  </Box>
+
+                  :
+                  <></>
+                  
+                  }
+
+                <Box sx={{ m: 5 }}>
+                  <AuctionComments auctionID={auction_id} />
+                </Box>
+
+                </CardContent>
+
+              </Card>
+
             </Grid>
-        </Container>
+
+          ))} 
+
+          </Grid>
+
+      </Container>
+
+
+      {/* modal starts here */}
+
+      <div>
+        
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          open={open}
+          onClose={handleClose}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500,
+          }}
+        >
+          <Fade in={open}>
+            <Box sx={modalStyle}>
+              <Typography id="transition-modal-title" variant="h6" component="h2">
+                Your bid has been placed
+              </Typography>
+              <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+                You now lead the auction at ${bidPrice}
+              </Typography>
+              <Box sx={{ py: 3 , margin:"auto"}}><NavLink  to='/' > Return to home </NavLink></Box>
+              
+            </Box>
+          </Fade>
+        </Modal>
+
+      </div>
+
+
+
     </div>
   )
 }

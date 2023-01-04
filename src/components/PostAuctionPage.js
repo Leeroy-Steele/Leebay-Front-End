@@ -74,7 +74,7 @@ export default function SignIn() {
         "seller_user_id":userID,
         "highest_bidder_id":null,
         "category":category,
-        "image_path":"tbc",
+        "image_path":"../images/noImagePicture.png",
         "auction_title":data.get('Title'),
         "item_location":data.get('Location'),
         "item_description":data.get('Description'),
@@ -83,8 +83,6 @@ export default function SignIn() {
     };
     axios.post('http://localhost:4000/addAuctionItem', itemData)
     .then(response => {
-      // console.log(response.data);
-      // console.log('The auction ID is '+ response.data[2])
 
       const redirectPath = location.state?.path || '/UploadImage'  //define where to navigate to after submit 
       navigate(redirectPath, {state:{auction_id:response.data[2]}, replace: true}) //nav to upload images page

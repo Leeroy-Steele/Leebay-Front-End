@@ -63,7 +63,7 @@ export default function SignUpSide() {
       .then(function (response) { // add user success
 
           if(typeof response.data[2]=== 'number'){
-            auth.login(userName)
+            auth.login(userName,response.data[2])
             navigate(redirectPath, { replace: true }) //nav to home page
           }
           

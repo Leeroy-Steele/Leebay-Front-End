@@ -3,7 +3,6 @@ import React from 'react' // needed here for lazy loading
 import './App.css';
 
 import { AuthProvider } from './components/Auth'
-import Comp from './components/Comp'  //test page
 
 const HomePage = React.lazy(()=>import('./components/HomePage'))
 const SignInPage = React.lazy(()=>import('./components/SignInPage'))
@@ -90,11 +89,6 @@ function App() {
         </Routes>
 
       </AuthProvider>
-
-
-    {/* testing only */}
-
-      {/* <Comp></Comp> */}
       
     </div>
   );
