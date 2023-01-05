@@ -1,52 +1,52 @@
-import { NavLink, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import axios from 'axios'
 import PlainHeader from './PlainHeader'
 import HeaderLinks from './HeaderLinks'
 import { Button } from '@mui/material';
-
-import Backdrop from '@mui/material/Backdrop';
-import Modal from '@mui/material/Modal';
-import Fade from '@mui/material/Fade';
+import Stack from '@mui/material/Stack';
 import React, { useState, useEffect } from 'react'
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-
-//for modal styling
-
-const modalStyle = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 300,
-  bgcolor: 'background.paper',
-  border: '1px solid #000',
-  boxShadow: 24,
-  p: 8,
-};
-
+import HomeAuctionCards from './cards/HomeAuctionCards';
 
 function FileUploadSingle() {
 
+  let [displayData, setDisplayData] = useState(null)
+  let [imageUploaded, setImageUploaded] = useState(false)
   const [file, setFile] = useState();
   const location = useLocation()
+  const navigate = useNavigate()
 
-  // for modal
+  useEffect(()=>{
 
-  const [open, setOpen] = React.useState(false);  
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+    //load auction details on page load
+
+    let config = {
+      method: 'get',
+      url: 'http://localhost:4000/findAuctionItem?auction_id=' + location.state.auction_id,
+      headers: { }
+    };
+    
+    axios(config)
+    .then(function (response) {
+      // console.log(JSON.stringify(response.data));
+      setDisplayData(response.data)
+
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+
+  },[])
 
   const handleFileChange = (e) => {
     if (e.target.files) {
       setFile(e.target.files[0]);
-    //   console.log(file)
+
     }
   };
 
   const handleUploadClick = (event) => {
-
-    event.preventDefault();
 
     if (!file) {
       return;
@@ -56,7 +56,7 @@ function FileUploadSingle() {
 	  formData.append('auctionImage', file);
 
     axios.post(
-        "http://localhost:4000/addAuctionPhoto?auction_id="+location.state.auction_id,    // post image file to correct auction 
+        "http://localhost:4000/addAuctionPhoto?auction_id=" + location.state.auction_id,    // post image file to correct auction 
         formData,{
             headers:{
                 "Content-Type": "multipart/form-data",
@@ -64,16 +64,40 @@ function FileUploadSingle() {
         }
       ).then(response => {
           console.log(response)
-          handleOpen()  //open modal for successfull image upload
-          return
+
+          let config = {
+            method: 'get',
+            url: 'http://localhost:4000/findAuctionItem?auction_id=' + location.state.auction_id,
+            headers: { }
+          };
+          
+          axios(config)
+          .then(function (response) {
+            // console.log(JSON.stringify(response.data));
+            setDisplayData(response.data)
+            setImageUploaded(true)
+            
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+
       })   
-    }
+  }
+  
+  
+
+  let handleSkipPhoto = ()=>{
+
+    const redirectPath = location.state?.path || '/Profile'  //navigate to post auction page
+    navigate(redirectPath, {replace: true}) 
+
+  }
 
   return (
     <>
-      <HeaderLinks linkName='Home' linkTo='/'/>
+      <HeaderLinks pageName=' Upload Image' linkName='Home' linkTo='/'/>
       <PlainHeader/>  
-
 
       <Box
         sx={{
@@ -81,78 +105,75 @@ function FileUploadSingle() {
             gridTemplateColumns:"repeat(12, 1fr)",
             gap:1,
             mx: 'auto',
-            my:3,
+            mt:3,
             width: 486,
             height: 150,
         }}>
 
-        <Box gridColumn="span 8">
-          <Typography variant="h6">
-            Please choose auction image
+        <Box gridColumn="span 6">
+          <Typography variant="subtitle1" textAlign='right' >
+            Please choose an auction image
           </Typography>
         </Box>
 
-        <Box gridColumn="span 4">
-          <Button
-            variant="contained"
-            component="label"
-            onChange={handleFileChange}
-          >
-            Select image
-            <input
-              type="file"
-              hidden
-            />
-          </Button>
-        </Box>
-            
-        <Box gridColumn="span 8">
-          {file && <Typography variant="h6"> Selected file: {file.name} </Typography>}
-        </Box>
-
-        <Box gridColumn="span 4">
-          {file && <Button 
-            variant="contained"
-            component="label"
-            
-            type='button' 
-            onClick={handleUploadClick}
+        <Box gridColumn="span 6">
+          <Stack spacing={1} direction="row">
+            <Button
+              size="small"
+              variant="outlined"
+              component="label"
+              onChange={handleFileChange}
+              // sx={{width:150}}
             >
-              Upload
-            </Button>}
-        </Box>
-      
-      </Box>
-    
-      <div>
-        
-        <Modal
-          aria-labelledby="transition-modal-title"
-          aria-describedby="transition-modal-description"
-          open={open}
-          onClose={handleClose}
-          closeAfterTransition
-          BackdropComponent={Backdrop}
-          BackdropProps={{
-            timeout: 500,
-          }}
-        >
-          <Fade in={open}>
-            <Box sx={modalStyle}>
-              <Typography id="transition-modal-title" variant="h6" component="h2">
-                Your image has been uploaded
-              </Typography>
-              {/* <Typography id="transition-modal-description" sx={{ mt: 2 }}>
-                You now lead the auction at $
-              </Typography> */}
-              <Box sx={{ py: 3 , margin:"auto"}}><NavLink  to='/Profile' > Return to profile </NavLink></Box>
-              
-            </Box>
-          </Fade>
-        </Modal>
+              Select image
+              <input
+                type="file"
+                hidden
+              />
+            </Button>
 
-      </div>
-    
+            {file && 
+              <Button 
+                size="small"
+                variant="contained"
+                component="label"
+                sx={{width:110}}
+                type='button' 
+                onClick={handleUploadClick}
+                >
+                  Upload
+              </Button>}
+            </Stack>
+        </Box>
+            
+        <Box gridColumn="span 12" >
+          {file && <Typography variant="subtitle1" textAlign='center'> Selected file: {file.name} </Typography>}
+        </Box>
+
+      </Box>
+
+      <Box textAlign='center' sc={{p:1}}>
+        {(imageUploaded===false)?
+          <Button onClick={handleSkipPhoto} variant='outlined' size="small">
+            Skip Photo
+          </Button>
+          :
+          <Button onClick={handleSkipPhoto} variant='outlined' size="small">
+            Back to Profile
+          </Button>
+        }
+
+      </Box>
+
+
+      <Box sx={{
+            mx: 'auto',
+            my:3,
+            width: 400
+            // height: 150,
+      }}>
+        { displayData && <HomeAuctionCards content={displayData[0]}/>}
+      </Box>
     </>
   );
 }

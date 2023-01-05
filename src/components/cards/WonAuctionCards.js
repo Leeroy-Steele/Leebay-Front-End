@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
+import moment from 'moment';
 
 //for material card template
 
@@ -21,15 +22,8 @@ import ScheduleIcon from '@mui/icons-material/Schedule';
 import PersonIcon from '@mui/icons-material/Person';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 
-// for dates
-
-import moment from 'moment';
-
-
 
 export default function WonAuctionCards(props) {
-  
-  // console.log(props.buyer_id)
 
     let [displayData, setDisplayData] = useState([])
 
@@ -53,30 +47,30 @@ export default function WonAuctionCards(props) {
   return (
     <div>
 
-      <Container sx={{ py: 4 , margin:"auto"}} maxWidth="md">
+      <Container sx={{ py: 4 , margin:"auto"}} maxWidth="lg">
 
         <Grid container spacing={4}>
 
             {displayData.map((item, index) => (
 
-            <Grid item key={item.auction_id} xs={12} sm={6}>
+            <Grid item key={item.auction_id} xs={12} sm={6} md={4}  xl={3}>
                 <Card
                   sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
                 >
                   <Typography variant="h5" component="h2" textAlign='center'>
                     {item.auction_title}
                   </Typography>
-
+                  
                   <CardMedia
                     component="img"
-                    sx={{pt: 2}}
+                    sx={{pt: 0.5,height:300}}
                     image={item.image_path}
                     alt="random"
                   />
 
                   <CardContent sx={{ flexGrow: 1 }}>
                     
-                    <Typography gutterBottom variant="body2">
+                    <Typography sx={{minHeight:150}} gutterBottom variant="body2">
                       {item.item_description}
                     </Typography>
                     

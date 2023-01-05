@@ -42,7 +42,8 @@ export default function AuctionComments(props) {
         const itemData = { 
             "user_id":Number(auth.checkUserID()),
             "auction_id":Number(auction_id),
-            "comment_text":data.get('Description')
+            "comment_text":data.get('Description'),
+            "user_name":auth.checkUserName()
 
         };
         axios.post('http://localhost:4000/addAuctionComment', itemData)

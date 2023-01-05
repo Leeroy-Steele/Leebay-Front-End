@@ -3,18 +3,12 @@ import React, { useState, useEffect } from 'react'
 import SearchHeader from './SearchHeader'
 import HeaderLinks from './HeaderLinks'
 import HomeAuctionCards from './cards/HomeAuctionCards'
-
 import axios from 'axios'
-import Card from '@mui/material/Card';  //for material card template
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { Button, CardActionArea, CardActions } from '@mui/material';
-
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
-import moment from 'moment';
-import { NavLink } from 'react-router-dom'
+import Box from '@mui/material/Box';
 
 
 
@@ -37,8 +31,16 @@ export default function HomePage() {
       for(let i in productData){
   
         let currentAuctionTitle = productData[i].auction_title
-  
-        if(currentAuctionTitle===searchName){
+        let currentAuctionLocation = productData[i].item_location
+        let currentAuctionDescription = productData[i].item_description
+
+        if(currentAuctionTitle.includes(searchName)){
+          setDisplayData(oldArray => [...oldArray, productData[i]]);
+        }
+        else if(currentAuctionLocation===searchName){
+          setDisplayData(oldArray => [...oldArray, productData[i]]);
+        }
+        else if(currentAuctionDescription.includes(searchName)){
           setDisplayData(oldArray => [...oldArray, productData[i]]);
         }
         
@@ -60,56 +62,62 @@ export default function HomePage() {
               console.log(err)
           })
           
-    },[]) //only run once 
+  },[]) //only run once 
 
-    useEffect(()=>{   // once category is selected, only show items in category
-      if(category==='All Categories'){setDisplayData(productData)}
-      else{
+  useEffect(()=>{   // once category is selected, only show items in category
+    if(category==='Reset'){setCategory('All Categories')}
+    
+    else if(category==='All Categories'){setDisplayData(productData)}
+
+    else{
       setDisplayData([])  //delete previous entries
-  
+
       for(let i in productData){
-  
+
         let currentCategory = productData[i].category
-  
+
         if(currentCategory===category){
           setDisplayData(oldArray => [...oldArray, productData[i]]);
         }
         
       }
     }
-    },[category])
+  },[category])
 
-    useEffect(() => {
-      // console.log(displayData[0].image_path)
-  },[displayData])
 
 return (
-  <div>
-    <HeaderLinks linkName='Profile' linkTo='/Profile'/>
+  <>
+    <HeaderLinks pageName=' Home' linkName='Profile' linkTo='/Profile'/>
 
     <SearchHeader childToParent={childToParent}/>
 
-    <Container sx={{ py: 2 , margin:"auto"}} maxWidth="md">
+    <Container sx={{ py: 2 , margin:"auto"}} maxWidth="lg">
       <Grid container spacing={1} alignItems="center" justifyContent="center">
         <Button size="small" onClick={()=>{setCategory('Home')}}>Home</Button>
         <Button size="small" onClick={()=>{setCategory('Vehicles')}}>Vehicles</Button>
         <Button size="small" onClick={()=>{setCategory('Clothing')}}>Clothing</Button>
         <Button size="small" onClick={()=>{setCategory('Sports & Hobbies')}}>Sports & Hobbies</Button>
-        <Button size="small" onClick={()=>{setCategory('All Categories')}}>All Categories</Button>
+        <Button size="small" onClick={()=>{setCategory('');setCategory('All Categories')}}>All Categories</Button>
       </Grid>
 
 
-      <Typography sx={{ py: 6 }}variant="h5" component="h2" textAlign='center'>
-                  {category}
-                  </Typography> 
+      <Typography sx={{ pt: 3,pb:2 }} variant="h6" component="h2" textAlign='center'>
+        {category}
+      </Typography> 
 
-      <Grid container rowSpacing={2}>
+      {searchName&&
+        <Box textAlign='center' sx={{pb:1 }}>
+          <Button color="error" size="small" onClick={()=>{setCategory('Reset');setSearchName('')}}>Clear Search</Button>
+        </Box>
+      }
+
+      <Grid container spacing={2}>
 
           {displayData &&
 
             displayData.map((item, index) => (
 
-            <Grid item key={item.auction_id} xs={12} md={6} lg={4}>
+            <Grid item key={item.auction_id} xs={12} sm={6} md={3} xl={3}>
                 
                 <HomeAuctionCards content={displayData[index]}/>
                 
@@ -118,8 +126,8 @@ return (
             )) 
           
           }
-          </Grid>
-      </Container>
-  </div>
+      </Grid>
+    </Container>
+  </>
 )
 }

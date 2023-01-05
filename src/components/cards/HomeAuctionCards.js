@@ -30,95 +30,84 @@ export default function HomeAuctionCards(props) {
   let displayData = [props.content]
 
   return (
-    <div>
-
-      <Container >
-
-        <Grid container >
+    <>
+      
+        <Grid >
 
             {displayData.map((item, index) => (
 
-            <Grid item key={item.auction_id}>
-
-            <Card
-              sx={{ height: '100%', display: 'flex', flexDirection: 'column'}}
-              
-            >
-              <NavLink to={`/ViewItem/${item.auction_id}`}>
-
+              <Grid item key={item.auction_id}>
+              <Card
+                sx={{ height: '100%', display: 'flex', flexDirection: 'column'}}
+              >
+                
                 <Typography variant="h5" component="h2" textAlign='center' sx={{  color: 'black', textDecoration: 'none' }} >
                   {item.auction_title}
                 </Typography>
-
-                <CardMedia
-                  component="img"
-                  sx={{pt: 0.5}}
-                  image={item.image_path}
-                  alt="random"
-                />
-              </NavLink>
-
-              <CardContent sx={{ flexGrow: 1 }}>
                 
-                <Typography gutterBottom variant="body2">
-                  {item.item_description}
-                </Typography>
-                
-                <List
-                  sx={{
-                    width: '100%',
-                    // maxWidth: 360,
-                    bgcolor: 'background.paper',
-                  }}
-                >
+                <NavLink to={`/ViewItem/${item.auction_id}`}> 
+                  <CardMedia
+                    component="img"
+                    sx={{pt: 0.5,height:300}}
+                    image={item.image_path}
+                    alt="random"
+                  />
+                </NavLink>
 
-                  <Divider component="li" />
+                <CardContent sx={{ flexGrow: 1 }}>
+                  
+                  <Typography sx={{minHeight:150}} gutterBottom variant="body2">
+                    {item.item_description}
+                  </Typography>
+                  
+                  <List
+                    sx={{
+                      width: '100%',
+                      bgcolor: 'background.paper',
+                    }}
+                  >
 
-                  <ListItem>
-                    <ListItemAvatar>
-                      <Avatar>
-                        <LocationOnIcon />
-                      </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText primary="Location" secondary={item.item_location} />
-                  </ListItem>
+                    <Divider component="li" />
 
-                  <Divider variant="inset" component="li" />
+                    <ListItem>
+                      <ListItemAvatar>
+                        <Avatar>
+                          <LocationOnIcon />
+                        </Avatar>
+                      </ListItemAvatar>
+                      <ListItemText primary="Location" secondary={item.item_location} />
+                    </ListItem>
 
-                  <ListItem>
-                    <ListItemAvatar>
-                      <Avatar>
-                        <AttachMoneyIcon />
-                      </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText primary="Current Price" secondary={"$"+ item.current_price} />
-                  </ListItem>
+                    <Divider variant="inset" component="li" />
 
-                  <Divider variant="inset" component="li" />
+                    <ListItem>
+                      <ListItemAvatar>
+                        <Avatar>
+                          <AttachMoneyIcon />
+                        </Avatar>
+                      </ListItemAvatar>
+                      <ListItemText primary="Current Price" secondary={"$"+ item.current_price} />
+                    </ListItem>
 
-                  <ListItem>
-                    <ListItemAvatar>
-                      <Avatar>
-                        <ScheduleIcon />
-                      </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText primary="Auction Ends" secondary={moment(item.end_date).format('DD.MM.YYYY HH:mm')} />
-                  </ListItem>
+                    <Divider variant="inset" component="li" />
 
-                </List>
+                    <ListItem>
+                      <ListItemAvatar>
+                        <Avatar>
+                          <ScheduleIcon />
+                        </Avatar>
+                      </ListItemAvatar>
+                      <ListItemText primary="Auction Ends" secondary={moment(item.end_date).format('DD.MM.YYYY HH:mm')} />
+                    </ListItem>
 
-                
-                
-                
+                  </List>
 
-              </CardContent>
-
-            </Card>
+                </CardContent>
+              </Card>
             </Grid>
-
             ))} 
-            </Grid>
-        </Container>
-    </div>
+          </Grid>
+      
+    </>
   )
 }

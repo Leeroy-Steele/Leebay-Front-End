@@ -28,23 +28,6 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import PlainHeader from './PlainHeader'
 import HeaderLinks from './HeaderLinks'
 
-
-
-
-// function Copyright(props) {
-
-//   return (
-//     <Typography variant="body2" color="text.secondary" align="center" {...props}>
-//       {'Copyright © '}
-//       <Link color="inherit" href="https://mui.com/">
-//         Your Website
-//       </Link>{' '}
-//       {new Date().getFullYear()}
-//       {'.'}
-//     </Typography>
-//   );
-// }
-
 const theme = createTheme();
 
 export default function SignIn() {
@@ -85,46 +68,23 @@ export default function SignIn() {
     .then(response => {
 
       const redirectPath = location.state?.path || '/UploadImage'  //define where to navigate to after submit 
-      navigate(redirectPath, {state:{auction_id:response.data[2]}, replace: true}) //nav to upload images page
+      navigate(redirectPath, {state:{auction_id:response.data[2]}, replace: true}) //nav to upload images page 
     
-    })    //need to navigate to image upload page with auction id
-
+    })  
   };
 
   useEffect(()=>{
 
     //load user details on page load
 
-    var userData = JSON.stringify({
-      "user_name": auth.checkUserName()
-
-    });
-    
-    var config = {
-      method: 'post',
-      url: 'http://localhost:4000/findUser',
-      headers: { 
-        'Content-Type': 'application/json'
-      },
-      data : userData
-    };
-    
-    axios(config)
-    .then(function (response) {
-      // console.log(JSON.stringify(response.data[0].user_id));
-      setUserID(response.data[0].user_id) 
-
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+    setUserID(auth.checkUserID()) 
 
   },[])
 
 
   return (
     <ThemeProvider theme={theme}>
-        <HeaderLinks linkName='Profile' linkTo='/Profile'/>
+        <HeaderLinks pageName=' Post Auction' linkName='Profile' linkTo='/Profile'/>
         <PlainHeader/>
 
       <Container component="main" maxWidth="xs">

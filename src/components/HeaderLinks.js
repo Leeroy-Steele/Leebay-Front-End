@@ -1,10 +1,11 @@
 import React from 'react'
 import Container from '@mui/material/Container';
-import Button from '@mui/material/Button';
+
 import Typography from '@mui/material/Typography';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from './Auth'  //For when logged in
 import Box from '@mui/material/Box';
+import Link from '@mui/material/Link';
 
 export default function HeaderLinks(props) {
 
@@ -21,6 +22,11 @@ export default function HeaderLinks(props) {
     navigate(redirectPath, {replace: true}) 
 
   }
+
+  const handleProfileButton = ()=>{
+    const redirectPath = location.state?.path || props.linkTo  //define where to navigate to after logout
+    navigate(redirectPath, {replace: false}) 
+  }
   
   return (
     <div>
@@ -35,16 +41,18 @@ export default function HeaderLinks(props) {
                     gridTemplateColumns:"repeat(12, 1fr)",
                     height: 25,
                 }}>
-                <Box gridColumn="span 11">
+                <Box gridColumn="span 8">
                   <span> 
                     <Typography mt={0.5} variant="body2">
                     User {auth.checkUserName()} / 
-                    <NavLink to={props.linkTo} >{props.linkName}</NavLink>
+                     {props.pageName}
                     </Typography>
                  </span>
                 </Box>
-                <Box gridColumn="span 1">
-                  <Button sx={{fontSize:10}} onClick={()=>{handleLogout()}}>Logout</Button>
+                <Box gridColumn="span 4" textAlign='right'>
+                  <Link underline="hover" component="button" onClick={()=>{handleProfileButton()}} >{props.linkName} </Link>
+                  <Link underline="hover" component="button" onClick={()=>{handleLogout()}}> / Logout</Link>
+              
                 </Box>
               </Box>
               

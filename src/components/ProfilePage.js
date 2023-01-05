@@ -13,21 +13,25 @@ import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import { NavLink } from 'react-router-dom'
+import { useNavigate, useLocation  } from 'react-router-dom'
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 
 export default function ProfilePage() {
 
   const auth = useAuth()  //For when logged in
-  let userName = auth.checkUserName()
+  const navigate = useNavigate()
+  const location = useLocation()
 
+  let userName = auth.checkUserName()
   let[email,setEmail]= useState('')
   let [userID, setUserID] = useState(null)
-
+  
   useEffect(()=>{
 
     //load user details on page load
-
+    if(userName){
+    
     var userData = JSON.stringify({
       "user_name": userName
 
@@ -44,16 +48,15 @@ export default function ProfilePage() {
     
     axios(config)
     .then(function (response) {
-      // console.log(JSON.stringify(response.data[0]));
+
       setEmail(response.data[0].email)
       setUserID(response.data[0].user_id)
-
 
     })
     .catch(function (error) {
       console.log(error);
     });
-
+  }
   },[])
 
   // populate profile information table
@@ -69,11 +72,49 @@ export default function ProfilePage() {
   
   ];
 
+  let handleDeleteAccount = ()=>{
+
+    const data = JSON.stringify({
+      "user_id": auth.checkUserID()
+    });
+    
+    const config = {
+      method: 'delete',
+      url: 'http://localhost:4000/deleteUser',
+      headers: { 
+        'Content-Type': 'application/json'
+      },
+      data : data
+    };
+    
+    axios(config)
+    .then(function (response) {
+   
+      auth.logout()
+      const redirectPath = location.state?.path || '/'  //navigate to home page after deleting account
+      navigate(redirectPath, {replace: true}) 
+
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+
+  }
+
+  let handlePostAuction = ()=>{
+
+    const redirectPath = location.state?.path || '/PostAuction'  //navigate to post auction page
+    navigate(redirectPath, {replace: false}) 
+
+  }
 
   return (
     <div>
-      <HeaderLinks linkName='Home' linkTo='/'/>
+      <HeaderLinks pageName=' Profile' linkName='Home ' linkTo='/'/>
+      
       <PlainHeader/>
+
+      {/* Profile Information section */}
 
       <Typography
           sx={{ textAlign: 'center',py: 2  }}
@@ -81,7 +122,15 @@ export default function ProfilePage() {
           component="div"
         >
           Profile Information
-        </Typography>
+      </Typography>
+
+      {userID!==null&&
+        <Box textAlign='center' sc={{p:1}}>
+          <Button onClick={handleDeleteAccount} variant='text'>
+          Delete Account
+          </Button>
+        </Box>
+      }
 
       <TableContainer component={Paper}  sx={{ maxWidth: 400, margin:"auto", py:2 }}>
         <Table aria-label="simple table">
@@ -102,6 +151,8 @@ export default function ProfilePage() {
           </TableBody>
         </Table>
       </TableContainer>
+
+      {/* My auctions section */}
       
       <Box sx={{ textAlign: 'center',py: 2  }}>
         <Typography
@@ -112,17 +163,24 @@ export default function ProfilePage() {
             My Auctions
         </Typography>
 
-        <NavLink sx={{ margin: 'auto',py: 5  }} to={`/PostAuction`}>Post Auction</NavLink>
-
         {(userID!==null)? //  show when user data has been retrived (Stops backend error) 
+
+          <>
+          <Box textAlign='center'>
+            <Button onClick={handlePostAuction} variant='text'>
+              Post Auction
+            </Button>
+          </Box>
+  
           <MyAuctionCards seller_id={userID}/>
-          // <></>
+          </>
           :
           <p>Not logged in</p>
         }
         
-
       </Box>
+
+      {/* Currently Bidding on section */}
 
       <Box sx={{ textAlign: 'center',py: 2  }}>
         <Typography
@@ -134,13 +192,16 @@ export default function ProfilePage() {
         </Typography>
         
         {(userID!==null)? //  show when user data has been retrived (Stops backend error) ****** first create bidding history data ******* 
+          
           <BiddingOnAuctionCards bidder_id={userID}/>
-          // <></>
+          
           :
           <p>Not logged in</p>
         }
         
       </Box>
+
+      {/* Won Auctions section */}
 
       <Box sx={{ textAlign: 'center',py: 2  }}>
         <Typography
@@ -152,8 +213,9 @@ export default function ProfilePage() {
         </Typography>
         
         {(userID!==null)? //  show when user data has been retrived (Stops backend error) 
+          
           <WonAuctionCards buyer_id={userID}/>
-          // <></>
+          
           :
           <p>Not logged in</p>
         }

@@ -19,7 +19,9 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import Button from '@mui/material/Button';
-import { useNavigate, useLocation } from 'react-router-dom'
+import { NavLink,useNavigate, useLocation } from 'react-router-dom'
+import Stack from '@mui/material/Stack';
+import Box from '@mui/material/Box';
 
 // for dates
 
@@ -71,7 +73,8 @@ export default function MyAuctionCards(props) {
       let handlDeleteAuction = (auctionID)=>{
 
         const data = JSON.stringify({
-          "auction_id": auctionID
+          "auction_id": auctionID,
+          "delete_image":true
         });
         
         const config = {
@@ -99,13 +102,14 @@ export default function MyAuctionCards(props) {
   return (
     <div>
 
-      <Container sx={{ py: 4 , margin:"auto"}} maxWidth="md">
+      <Container sx={{ py: 4 , margin:"auto"}} maxWidth="lg">
 
         <Grid container spacing={4}>
 
-            {displayData.map((item, index) => (
+          {displayData.map((item, index) => (
 
-              <Grid item key={item.auction_id} xs={12} sm={6}>
+            <Grid item key={item.auction_id} xs={12} sm={6} md={4}  xl={3}>
+            
               <Card
                 sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
               >
@@ -113,30 +117,37 @@ export default function MyAuctionCards(props) {
                   {item.auction_title}
                 </Typography>
 
-                <CardMedia
-                  component="img"
-                  sx={{pt: 2}}
-                  image={item.image_path}
-                  alt="random"
-                />
+                <NavLink to={`/ViewItem/${item.auction_id}`}> 
+                  <CardMedia
+                    component="img"
+                    sx={{pt: 0.5,height:300}}
+                    image={item.image_path}
+                    alt="random"
+                  />
+                </NavLink>
 
-                <Button
-                  onClick={()=>{handlChangePicture(item.auction_id)}}
-                  sx={{ mx:'auto', my:2}}
-                >
-                  Change Picture
-                </Button>
+                <Box
+                  sx={{
+                      display:"grid",
+                      gridTemplateColumns:"repeat(12, 1fr)",
+                      gap:1,
+                      mx: 'auto',
+                      mt:1,
+                  }}>
+                  <Stack spacing={1} direction="row" gridColumn="span 12">
+                    <Button size="small" color='warning' onClick={()=>{handlChangePicture(item.auction_id)}}>
+                      Change Picture
+                    </Button>
 
-                <Button
-                  onClick={()=>{handlDeleteAuction(item.auction_id)}}
-                  sx={{ m:'auto'}}
-                >
-                  Delete Auction
-                </Button>
+                    <Button size="small" color='warning' onClick={()=>{handlDeleteAuction(item.auction_id)}}>
+                      Delete Auction
+                    </Button>
+                  </Stack>
+                </Box>
 
                 <CardContent sx={{ flexGrow: 1 }}>
                   
-                  <Typography gutterBottom variant="body2">
+                  <Typography sx={{minHeight:150}} gutterBottom variant="body2">
                     {item.item_description}
                   </Typography>
                   
@@ -186,11 +197,10 @@ export default function MyAuctionCards(props) {
                 </CardContent>
 
               </Card>
-              </Grid>
-
-            ))} 
             </Grid>
-        </Container>
+          ))} 
+        </Grid>
+      </Container>
     </div>
   )
 }

@@ -64,31 +64,19 @@ export default function SignInSide() {
       axios(config)
       .then(function (response) { // login success
 
-          //get user name
+          console.log(response.data)
 
-          var userData = JSON.stringify({
-            "email": email
-          });
-          
-          var config = {
-            method: 'post',
-            url: 'http://localhost:4000/findUser',
-            headers: { 
-              'Content-Type': 'application/json'
-            },
-            data : userData
-          };
-          
-          axios(config)
-          .then(function (response) {
-            // console.log(response.data[0].user_name);
-            auth.login(response.data[0].user_name,response.data[0].user_id)
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
+          let user_name = response.data[0].user_name
+          let user_id = response.data[0].user_id
 
+          if(user_name && user_id){
+          auth.login(response.data[0].user_name,response.data[0].user_id)
           navigate(redirectPath, { replace: true }) //nav to home page
+          }
+          else{
+
+            alert(`Sign in details are not correct`)
+          }
 
       })
       .catch(function (error) { // login fail / error
@@ -134,9 +122,11 @@ export default function SignInSide() {
             <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
               <LockOutlinedIcon />
             </Avatar>
-            <Typography component="h1" variant="h5">
+
+            <Typography component="h1" variant="h3">
               Sign in
             </Typography>
+
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
               <TextField
                 margin="normal"
