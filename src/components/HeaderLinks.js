@@ -1,6 +1,5 @@
 import React from 'react'
 import Container from '@mui/material/Container';
-
 import Typography from '@mui/material/Typography';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from './Auth'  //For when logged in
@@ -9,7 +8,6 @@ import Link from '@mui/material/Link';
 
 export default function HeaderLinks(props) {
 
-  // console.log(props.linkTo)
   const auth = useAuth()  //For when logged in
   const navigate = useNavigate()
   const location = useLocation()
@@ -41,6 +39,7 @@ export default function HeaderLinks(props) {
                     gridTemplateColumns:"repeat(12, 1fr)",
                     height: 25,
                 }}>
+
                 <Box gridColumn="span 8">
                   <span> 
                     <Typography mt={0.5} variant="body2">
@@ -49,7 +48,9 @@ export default function HeaderLinks(props) {
                     </Typography>
                  </span>
                 </Box>
+                
                 <Box gridColumn="span 4" textAlign='right'>
+
                   <Link underline="hover" component="button" onClick={()=>{handleProfileButton()}} >{props.linkName} </Link>
                   <Link underline="hover" component="button" onClick={()=>{handleLogout()}}> / Logout</Link>
               

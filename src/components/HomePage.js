@@ -10,8 +10,6 @@ import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 
-
-
 export default function HomePage() {
   
   let [searchName, setSearchName] = useState('')
@@ -64,7 +62,10 @@ export default function HomePage() {
           
   },[]) //only run once 
 
-  useEffect(()=>{   // once category is selected, only show items in category
+  
+  // once category is selected, only show items in category
+
+  useEffect(()=>{   
     if(category==='Reset'){setCategory('All Categories')}
     
     else if(category==='All Categories'){setDisplayData(productData)}

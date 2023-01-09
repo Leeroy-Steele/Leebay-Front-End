@@ -15,9 +15,7 @@ import { useAuth } from './Auth'
 import { useNavigate, useLocation } from 'react-router-dom'
 import axios from 'axios'
 
-
 const theme = createTheme();
-
 
 export default function SignInSide() {
 

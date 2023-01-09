@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router';
 import axios from 'axios'
 import { useAuth } from './Auth'  //For when logged in
-
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';  //for material card template
 import CardContent from '@mui/material/CardContent';
@@ -23,19 +22,16 @@ import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import moment from 'moment';
 import { NavLink } from 'react-router-dom'
-
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
 import HeaderLinks from './HeaderLinks';
 import PlainHeader from './PlainHeader'
-
 import Backdrop from '@mui/material/Backdrop';
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import AuctionComments from './AuctionComments';
-
 
 //for modal styling
 
@@ -50,7 +46,6 @@ const modalStyle = {
   boxShadow: 24,
   p: 8,
 };
-
 
 
 export default function ViewItemPage() {
@@ -280,7 +275,9 @@ export default function ViewItemPage() {
               <Typography id="transition-modal-description" sx={{ mt: 2 }}>
                 You now lead the auction at ${bidPrice}
               </Typography>
-              <Box sx={{ py: 3 , margin:"auto"}}><NavLink  to='/' > Return to home </NavLink></Box>
+              <Box sx={{ py: 3 , margin:"auto"}}>
+                <NavLink  to='/' > Return to home </NavLink>
+              </Box>
               
             </Box>
           </Fade>

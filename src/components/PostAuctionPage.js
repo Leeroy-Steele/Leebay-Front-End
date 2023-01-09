@@ -8,22 +8,18 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
 import InputLabel from '@mui/material/InputLabel';  //for select category input
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';  //for date picker
 import moment from 'moment';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-
 import axios from 'axios'
 import { useAuth } from './Auth'  // Get userName
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
-  
 import { useNavigate, useLocation } from 'react-router-dom'
 import PlainHeader from './PlainHeader'
 import HeaderLinks from './HeaderLinks'
@@ -48,10 +44,10 @@ export default function SignIn() {
 
   const handleSubmit = (event) => {
 
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    event.preventDefault(); // prevent page reloading
+    const data = new FormData(event.currentTarget); // get form data 
 
-    // console.log(Number(data.get('Price')))
+    // define auction data object for database
 
     const itemData = { 
         "seller_user_id":userID,

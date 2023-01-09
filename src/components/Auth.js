@@ -1,13 +1,10 @@
 import { useState, createContext, useContext } from 'react'
-
 const AuthContext = createContext(null)
 
 export const AuthProvider = ({ children }) => {
 
   const [userName, setUser] = useState(null)
   const [userID, setUserID] = useState(null)
-
-  // console.log('Auth Provider function')
 
   const login = (userEmail,user_ID) => {
     // console.log('login attempt made')

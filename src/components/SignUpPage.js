@@ -1,7 +1,5 @@
 import * as React from 'react';
-
 import PlainHeader from './PlainHeader'
-
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -16,7 +14,6 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios'
 import { useAuth } from './Auth'
 import { useNavigate, useLocation } from 'react-router-dom'
-
 
 const theme = createTheme();
 
