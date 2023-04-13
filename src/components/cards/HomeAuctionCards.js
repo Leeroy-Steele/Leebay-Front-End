@@ -50,6 +50,7 @@ export default function HomeAuctionCards(props) {
                     component="img"
                     sx={{pt: 0.5,height:300}}
                     image={item.image_path}
+                    // image={'images/auctionImage-1672716981285-906249225.jpg'}//auctionImage-1673496278710-966038450.jpg  auctionImage-1672698056935-607270940.jpg auctionImage-1672716981285-906249225.jpg
                     alt="random"
                   />
                 </NavLink>

@@ -5,7 +5,7 @@ import HeaderLinks from './HeaderLinks'
 import HomeAuctionCards from './cards/HomeAuctionCards'
 import axios from 'axios'
 import Typography from '@mui/material/Typography';
-import { Button, CardActionArea, CardActions } from '@mui/material';
+import { Button } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
@@ -14,76 +14,93 @@ export default function HomePage() {
   
   let [searchName, setSearchName] = useState('')
   let[category,setCategory]= useState('')
-  let [productData, setProductData] = useState('')
+  let [productData, setProductData] = useState([])
   let [displayData, setDisplayData] = useState([])
 
-  const childToParent = (childdata) => {  //get search data from child component (Search navbar)
+
+
+  // get all auction item data (productData) on initial page load
+
+  useEffect(() => { 
+
+    const options = {
+        method: 'GET',
+        url: 'http://localhost:4000/findAllAuctionItems',
+
+    };
+      
+    axios.request(options)
+        .then(res => {setProductData(res.data);setDisplayData(res.data)})
+        .catch(err => {
+            console.log(err)
+        })
+        
+  },[]) //only run once 
+
+
+  // pagination
+
+
+
+  //get search data from child component (Search navbar)
+
+  const childToParent = (childdata) => {  
     setSearchName(childdata);
   }
 
-  useEffect(()=>{   // handle search for item here
-    // console.log(searchName)
 
-    setDisplayData([])  //delete previous entries
-  
-      for(let i in productData){
-  
-        let currentAuctionTitle = productData[i].auction_title
-        let currentAuctionLocation = productData[i].item_location
-        let currentAuctionDescription = productData[i].item_description
 
-        if(currentAuctionTitle.includes(searchName)){
-          setDisplayData(oldArray => [...oldArray, productData[i]]);
-        }
-        else if(currentAuctionLocation===searchName){
-          setDisplayData(oldArray => [...oldArray, productData[i]]);
-        }
-        else if(currentAuctionDescription.includes(searchName)){
-          setDisplayData(oldArray => [...oldArray, productData[i]]);
-        }
-        
+  //// handle search for item here
+
+  useEffect(()=>{   
+
+    setDisplayData([])  //empty display items first
+  
+    productData.forEach((item)=>{
+
+      let currentAuctionTitle = item.auction_title
+      let currentAuctionLocation = item.item_location
+      let currentAuctionDescription = item.item_description
+
+      if(currentAuctionTitle.includes(searchName)){
+        setDisplayData(oldArray => [...oldArray, item]);
       }
+      else if(currentAuctionLocation===searchName){
+        setDisplayData(oldArray => [...oldArray, item]);
+      }
+      else if(currentAuctionDescription.includes(searchName)){
+        setDisplayData(oldArray => [...oldArray, item]);
+      }
+    })
 
   },[searchName])
 
-  useEffect(() => { // get all auction items on page load
 
-      const options = {
-          method: 'GET',
-          url: 'http://localhost:4000/findAllAuctionItems',
-  
-      };
-        
-      axios.request(options)
-          .then(res => {setProductData(res.data);setDisplayData(res.data)})
-          .catch(err => {
-              console.log(err)
-          })
-          
-  },[]) //only run once 
 
-  
-  // once category is selected, only show items in category
 
-  useEffect(()=>{   
-    if(category==='Reset'){setCategory('All Categories')}
-    
-    else if(category==='All Categories'){setDisplayData(productData)}
+  //// once category is selected, only show items in that category
 
-    else{
-      setDisplayData([])  //delete previous entries
+  useEffect(() => {
 
-      for(let i in productData){
+    if (category === "Reset") {
+      setCategory("All Categories");
+    } else if (category === "All Categories") {
+      setDisplayData(productData);
+    } else {
+      setDisplayData([]); //delete previous entries
 
-        let currentCategory = productData[i].category
+      productData.forEach((item) => {
+        let currentCategory = item.category;
 
-        if(currentCategory===category){
-          setDisplayData(oldArray => [...oldArray, productData[i]]);
+        if (currentCategory === category) {
+          setDisplayData((oldArray) => [...oldArray, item]);
         }
-        
-      }
+      });
     }
-  },[category])
+  }, [category]);
+
+
+
 
 
 return (
@@ -98,7 +115,7 @@ return (
         <Button size="small" onClick={()=>{setCategory('Vehicles')}}>Vehicles</Button>
         <Button size="small" onClick={()=>{setCategory('Clothing')}}>Clothing</Button>
         <Button size="small" onClick={()=>{setCategory('Sports & Hobbies')}}>Sports & Hobbies</Button>
-        <Button size="small" onClick={()=>{setCategory('');setCategory('All Categories')}}>All Categories</Button>
+        <Button size="small" onClick={()=>{setCategory('All Categories')}}>All Categories</Button>
       </Grid>
 
 
@@ -127,6 +144,7 @@ return (
             )) 
           
           }
+
       </Grid>
     </Container>
   </>
