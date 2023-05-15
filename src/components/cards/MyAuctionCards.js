@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 
 //for material card template
-
 import Card from '@mui/material/Card';  
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
@@ -24,10 +23,14 @@ import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 
 // for dates
-
 import moment from 'moment';
 
+import { useAuth } from '../Auth'  //For changing backend URL eg, localhost to AWS
+
+
 export default function MyAuctionCards(props) {
+
+  const auth = useAuth()  //For changing backend URL eg, localhost to AWS
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -49,7 +52,7 @@ export default function MyAuctionCards(props) {
 
         axiosRequestOptions = {
             method: 'GET',
-            url: 'http://localhost:4000/findAllAuctionItems?user_id='+props.seller_id,
+            url: `${auth.backendURL}/find-all-auction-items?user_id=${props.seller_id}`,
     
         };
       }
@@ -79,7 +82,7 @@ export default function MyAuctionCards(props) {
         
         const config = {
           method: 'delete',
-          url: 'http://localhost:4000/deleteAuctionItem',
+          url: 'http://leebay-expressjs-backend-v2-dev602.ap-southeast-2.elasticbeanstalk.com/delete-auction-item',
           headers: { 
             'Content-Type': 'application/json'
           },
@@ -121,7 +124,7 @@ export default function MyAuctionCards(props) {
                   <CardMedia
                     component="img"
                     sx={{pt: 0.5,height:300}}
-                    image={item.image_path}
+                    image={`${auth.backendURL}/get-auction-image?fileName=${item.image_path}`} // Will change to AWS path - http://leebay-expressjs-backend-v2-dev602.ap-southeast-2.elasticbeanstalk.com/get-auction-image?fileName=
                     alt="random"
                   />
                 </NavLink>

@@ -53,14 +53,14 @@ export default function SignIn() {
         "seller_user_id":userID,
         "highest_bidder_id":null,
         "category":category,
-        "image_path":"../images/noImagePicture.png",
+        "image_path":"noImagePicture.png",
         "auction_title":data.get('Title'),
         "item_location":data.get('Location'),
         "item_description":data.get('Description'),
         "current_price":Number(data.get('Price')),
         "end_date":moment(auctionEndTime._d).format("YYYY-MM-DD HH:mm:ss")
     };
-    axios.post('http://localhost:4000/addAuctionItem', itemData)
+    axios.post(`${auth.backendURL}/add-auction-item`, itemData)
     .then(response => {
 
       const redirectPath = location.state?.path || '/UploadImage'  //define where to navigate to after submit 

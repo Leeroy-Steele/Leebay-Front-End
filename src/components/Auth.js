@@ -25,8 +25,12 @@ export const AuthProvider = ({ children }) => {
     return userID
   }
 
+  // change between localhost and AWS backend here
+  // const backendURL = "http://localhost:4000"
+  const backendURL = "http://leebay-expressjs-backend-v2-dev602.ap-southeast-2.elasticbeanstalk.com"
+
   return (
-    <AuthContext.Provider value={{ userName, login, logout, checkUserName,checkUserID }}>
+    <AuthContext.Provider value={{ userName, login, logout, checkUserName,checkUserID, backendURL }}>
       {children}
     </AuthContext.Provider>
   )

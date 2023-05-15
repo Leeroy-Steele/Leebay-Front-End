@@ -11,7 +11,11 @@ import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import BasicPagination from './Pagination'
 
+import { useAuth } from './Auth'  //For changing backend URL eg, localhost to AWS
+
 export default function HomePage() {
+  const auth = useAuth()  //For changing backend URL eg, localhost to AWS
+
   let [searchName, setSearchName] = useState(""); // for search input
   let [category, setCategory] = useState(""); // for category select button
   let [allAuctionItems, setAllAuctionItems] = useState([]); // data from all auctions
@@ -24,11 +28,10 @@ export default function HomePage() {
   let pageResults = 8;
 
   // get all auction item data (productData) on initial page load
-
   useEffect(() => {
     const options = {
       method: "GET",
-      url: "http://localhost:4000/findAllAuctionItems",
+      url: `${auth.backendURL}/find-all-auction-items`,
     };
 
     axios
@@ -187,7 +190,7 @@ export default function HomePage() {
         <Grid container spacing={2}>
           {pageItems &&
             pageItems.map((item, index) => (
-              <Grid item key={item.auction_id} xs={12} sm={6} md={3} xl={3}>
+              <Grid item key={item.auction_id} xs={12} sm={12} md={6} lg={4} xl={3}>
                 <HomeAuctionCards content={pageItems[index]} />
               </Grid>
             ))}

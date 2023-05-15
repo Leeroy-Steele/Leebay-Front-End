@@ -39,7 +39,7 @@ export default function ProfilePage() {
     
     var config = {
       method: 'post',
-      url: 'http://localhost:4000/findUser',
+      url: `${auth.backendURL}/find-user`, // URL Will change to http://leebay-expressjs-backend-v2-dev602.ap-southeast-2.elasticbeanstalk.com/find-user
       headers: { 
         'Content-Type': 'application/json'
       },
@@ -80,7 +80,7 @@ export default function ProfilePage() {
     
     const config = {
       method: 'delete',
-      url: 'http://localhost:4000/deleteUser',
+      url: `${auth.backendURL}/delete-user`, // URL Will change to http://leebay-expressjs-backend-v2-dev602.ap-southeast-2.elasticbeanstalk.com/delete-user
       headers: { 
         'Content-Type': 'application/json'
       },
@@ -194,7 +194,6 @@ export default function ProfilePage() {
         {(userID!==null)? //  show when user data has been retrived (Stops backend error) ****** first create bidding history data ******* 
           
           <BiddingOnAuctionCards bidder_id={userID}/>
-          
           :
           <p>Not logged in</p>
         }

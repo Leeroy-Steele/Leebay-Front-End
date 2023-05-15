@@ -19,39 +19,41 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import { NavLink } from 'react-router-dom'
+import moment from 'moment';  // for dates
 
-// for dates
-
-import moment from 'moment';
+import { useAuth } from '../Auth'  //For changing backend URL eg, localhost to AWS
 
 
 export default function BiddingOnAuctionCards(props) {
+
+  const auth = useAuth()  //For changing backend URL eg, localhost to AWS
+
+  let [displayData, setDisplayData] = useState([])
+  let axiosRequestOptions = {}
+
+  useEffect(() => { // get all auction items on page load
+
+    if(props.bidder_id!==undefined){
+
+      axiosRequestOptions = {
+          method: 'GET',
+          url: `${auth.backendURL}/find-all-auction-items?bidder_id=${props.bidder_id}`,
   
-  // console.log(props.seller_id)
+      };
+    }
+    else{return}
+        
+      axios.request(axiosRequestOptions)
+          .then(res => {
+            console.log(res.data[0].auction_id)
+            setDisplayData(res.data)
+          })
+          .catch(err => {
+              console.log(err)
+          })
 
-    let [displayData, setDisplayData] = useState([])
-    let axiosRequestOptions = {}
-
-    useEffect(() => { // get all auction items on page load
-
-      if(props.bidder_id!=undefined){
-
-        axiosRequestOptions = {
-            method: 'GET',
-            url: 'http://localhost:4000/findAllAuctionItems?bidder_id='+props.bidder_id,
     
-        };
-      }
-      else{return}
-          
-        axios.request(axiosRequestOptions)
-            .then(res => {setDisplayData(res.data)})
-            .catch(err => {
-                console.log(err)
-            })
-
-     
-      },[]) //only run once on page load
+    },[]) //only run once on page load
 
   return (
     <div>
@@ -60,8 +62,8 @@ export default function BiddingOnAuctionCards(props) {
 
         <Grid container spacing={4}>
 
-            {displayData.map((item, index) => (
-
+          {displayData.map((item, index) => (
+  
               <Grid item key={item.auction_id} xs={12} sm={6} md={4}  xl={3}>
               <Card
                 sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
@@ -74,7 +76,7 @@ export default function BiddingOnAuctionCards(props) {
                   <CardMedia
                     component="img"
                     sx={{pt: 0.5,height:300}}
-                    image={item.image_path}
+                    image={`${auth.backendURL}/get-auction-image?fileName=` + item.image_path} // Will change to AWS path - http://leebay-expressjs-backend-v2-dev602.ap-southeast-2.elasticbeanstalk.com/get-auction-image?fileName=
                     alt="random"
                   />
                 </NavLink>

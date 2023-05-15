@@ -20,7 +20,7 @@ export default function AuctionComments(props) {
 
         let config = {
             method: 'get',
-            url: 'http://localhost:4000/findAllAuctionComments?auction_id=' + auction_id,
+            url: `${auth.backendURL}/find-all-auction-comments?auction_id=${auction_id}`,
             headers: { }
         };
         
@@ -46,9 +46,8 @@ export default function AuctionComments(props) {
             "user_name":auth.checkUserName()
 
         };
-        axios.post('http://localhost:4000/addAuctionComment', itemData)
+        axios.post(`${auth.backendURL}/add-auction-comment`, itemData)
         .then(response => {
-            // console.log(response.data);
             setComments(oldArray => [...oldArray, itemData]);        //not working??
         })    
         .catch(function (error) {

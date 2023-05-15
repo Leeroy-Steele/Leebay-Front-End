@@ -52,7 +52,7 @@ export default function SignInSide() {
       
       const config = {
         method: 'post',
-        url: 'http://localhost:4000/findUserAndPassword',
+        url: `${auth.backendURL}/check-user-email-and-password`, // URL Will change to http://leebay-expressjs-backend-v2-dev602.ap-southeast-2.elasticbeanstalk.com/check-user-email-and-password
         headers: { 
           'Content-Type': 'application/json'
         },
@@ -62,17 +62,14 @@ export default function SignInSide() {
       axios(config)
       .then(function (response) { // login success
 
-          console.log(response.data)
-
           let user_name = response.data[0].user_name
           let user_id = response.data[0].user_id
 
           if(user_name && user_id){
-          auth.login(response.data[0].user_name,response.data[0].user_id)
-          navigate(redirectPath, { replace: true }) //nav to home page
+            auth.login(response.data[0].user_name,response.data[0].user_id)
+            navigate(redirectPath, { replace: true }) //nav to home page
           }
           else{
-
             alert(`Sign in details are not correct`)
           }
 
@@ -99,7 +96,7 @@ export default function SignInSide() {
           sm={4}
           md={7}
           sx={{
-            backgroundImage: 'url(https://source.unsplash.com/random)',   //change background image here
+            backgroundImage: 'url(https://i.redd.it/e6ez7pjx4o521.jpg)',   //change background image here
             backgroundRepeat: 'no-repeat',
             backgroundColor: (t) =>
               t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],

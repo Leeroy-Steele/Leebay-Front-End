@@ -49,7 +49,7 @@ export default function SignUpSide() {
       
       const config = {
         method: 'post',
-        url: 'http://localhost:4000/addUser',
+        url: `${auth.backendURL}/add-user`, // URL Will change to http://leebay-expressjs-backend-v2-dev602.ap-southeast-2.elasticbeanstalk.com/add-user
         headers: { 
           'Content-Type': 'application/json'
         },
@@ -99,7 +99,7 @@ export default function SignUpSide() {
           sm={4}
           md={7}
           sx={{
-            backgroundImage: 'url(https://source.unsplash.com/random)',   //change background image here
+            backgroundImage: 'url(https://i.redd.it/e6ez7pjx4o521.jpg)',   //change background image here
             backgroundRepeat: 'no-repeat',
             backgroundColor: (t) =>
               t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],

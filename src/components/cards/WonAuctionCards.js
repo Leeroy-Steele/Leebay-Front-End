@@ -22,27 +22,32 @@ import ScheduleIcon from '@mui/icons-material/Schedule';
 import PersonIcon from '@mui/icons-material/Person';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 
+import { useAuth } from '../Auth'  //For changing backend URL eg, localhost to AWS
+
+
 
 export default function WonAuctionCards(props) {
 
-    let [displayData, setDisplayData] = useState([])
+  const auth = useAuth()  //For changing backend URL eg, localhost to AWS
 
-    useEffect(() => { // get all auction items on page load
+  let [displayData, setDisplayData] = useState([])
 
-        const options = {
-            method: 'GET',
-            url: 'http://localhost:4000/findAllExpiredAuctionItems?highest_bidder_id='+ props.buyer_id,
-    
-        };
+  useEffect(() => { // get all auction items on page load
+
+      const options = {
+          method: 'GET',
+          url: `${auth.backendURL}/find-all-expired-auction-items?highest_bidder_id=${props.buyer_id}`,
+  
+      };
+        
+      axios.request(options)
+          .then(res => {setDisplayData(res.data)})
+          .catch(err => {
+              console.log(err)
+          })
+
           
-        axios.request(options)
-            .then(res => {setDisplayData(res.data)})
-            .catch(err => {
-                console.log(err)
-            })
-
-            
-      },[]) //only run once on page load
+    },[]) //only run once on page load
 
   return (
     <div>
@@ -64,7 +69,7 @@ export default function WonAuctionCards(props) {
                   <CardMedia
                     component="img"
                     sx={{pt: 0.5,height:300}}
-                    image={item.image_path}
+                    image={`${auth.backendURL}/get-auction-image?fileName=${item.image_path}`} // Will change to AWS path - http://leebay-expressjs-backend-v2-dev602.ap-southeast-2.elasticbeanstalk.com/get-auction-image?fileName=
                     alt="random"
                   />
 

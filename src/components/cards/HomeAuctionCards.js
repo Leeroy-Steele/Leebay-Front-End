@@ -1,5 +1,5 @@
 import React from 'react'
-import { NavLink, Link } from 'react-router-dom'
+import { NavLink} from 'react-router-dom'
 
 //for material card template
 
@@ -8,7 +8,6 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
-import Container from '@mui/material/Container';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
@@ -19,6 +18,8 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 
+import { useAuth } from '../Auth'  //For changing backend URL eg, localhost to AWS
+
 
 // for dates
 
@@ -27,13 +28,15 @@ import moment from 'moment';
 
 export default function HomeAuctionCards(props) {
 
+  const auth = useAuth()  //For changing backend URL eg, localhost to AWS
+
   let displayData = [props.content]
 
   return (
     <>
       
         <Grid >
-
+   
             {displayData.map((item, index) => (
 
               <Grid item key={item.auction_id}>
@@ -49,9 +52,8 @@ export default function HomeAuctionCards(props) {
                   <CardMedia
                     component="img"
                     sx={{pt: 0.5,height:300}}
-                    image={item.image_path}
-                    // image={'images/auctionImage-1672716981285-906249225.jpg'}//auctionImage-1673496278710-966038450.jpg  auctionImage-1672698056935-607270940.jpg auctionImage-1672716981285-906249225.jpg
-                    alt="random"
+                    image={`${auth.backendURL}/get-auction-image?fileName=${item.image_path}` } // Will change to AWS path - http://leebay-expressjs-backend-v2-dev602.ap-southeast-2.elasticbeanstalk.com/get-auction-image?fileName=
+                    alt="Auction Image"
                   />
                 </NavLink>
 

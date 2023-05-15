@@ -8,7 +8,7 @@ import Card from '@mui/material/Card';  //for material card template
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { Button, CardActionArea, CardActions } from '@mui/material';
+import { Button } from '@mui/material';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
@@ -23,7 +23,6 @@ import Container from '@mui/material/Container';
 import moment from 'moment';
 import { NavLink } from 'react-router-dom'
 import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
 import HeaderLinks from './HeaderLinks';
@@ -64,16 +63,16 @@ export default function ViewItemPage() {
   const handleClose = () => setOpen(false);
 
     useEffect(() => { // get all auction items on page load
-        
+      
         var config = {
             method: 'get',
-            url: `http://localhost:4000/findAuctionItem?auction_id=${auction_id}`,
+            url: `${auth.backendURL}/find-auction-item?auction_id=${auction_id}`,
             headers: { }
           };
           
           axios(config)
           .then(function (response) {
-            // console.log(response.data[0].auction_title);
+            // console.log(response.data[0].image_path);
             setDisplayData(response.data)
           })
           .catch(function (error) {
@@ -101,7 +100,7 @@ export default function ViewItemPage() {
         
         const config = {
           method: 'patch',
-          url: 'http://localhost:4000/placeBid',
+          url: `${auth.backendURL}/place-bid`,
           headers: { 
             'Content-Type': 'application/json'
           },
@@ -121,7 +120,7 @@ export default function ViewItemPage() {
         
       }
       else{
-        alert("bid must be higher than "+displayData[0].current_price)
+        alert("bid must be higher than "+ displayData[0].current_price)
       }
 
     }
@@ -149,10 +148,11 @@ export default function ViewItemPage() {
                 <CardMedia
                   component="img"
                   sx={{pt: 2}}
-                  image={item.image_path}
-                  alt="random"
+                  image={`${auth.backendURL}/get-auction-image?fileName=${item.image_path}`} // Will change to AWS path - http://leebay-expressjs-backend-v2-dev602.ap-southeast-2.elasticbeanstalk.com/get-auction-image?fileName=
+                  alt=" Auction Image"
                 />
-
+        
+                {console.log(item.image_path)}
                 <CardContent sx={{ flexGrow: 1 }}>
   
                   
