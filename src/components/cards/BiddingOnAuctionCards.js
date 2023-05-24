@@ -21,6 +21,7 @@ import ScheduleIcon from '@mui/icons-material/Schedule';
 import { NavLink } from 'react-router-dom'
 import moment from 'moment';  // for dates
 
+
 import { useAuth } from '../Auth'  //For changing backend URL eg, localhost to AWS
 
 
@@ -45,7 +46,6 @@ export default function BiddingOnAuctionCards(props) {
         
       axios.request(axiosRequestOptions)
           .then(res => {
-            console.log(res.data[0].auction_id)
             setDisplayData(res.data)
           })
           .catch(err => {

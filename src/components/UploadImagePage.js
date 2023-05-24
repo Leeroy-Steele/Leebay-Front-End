@@ -1,7 +1,7 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
-import PlainHeader from "./PlainHeader";
-import HeaderLinks from "./HeaderLinks";
+import PlainHeader from "./headers/PlainHeader";
+import HeaderLinks from "./headers/HeaderLinks";
 import { Button } from "@mui/material";
 import Stack from "@mui/material/Stack";
 import React, { useState, useEffect } from "react";

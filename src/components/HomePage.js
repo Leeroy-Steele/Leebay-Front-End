@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
  
-import SearchHeader from './SearchHeader'
-import HeaderLinks from './HeaderLinks'
+import SearchHeader from './headers/SearchHeader'
+import HeaderLinks from './headers/HeaderLinks'
 import HomeAuctionCards from './cards/HomeAuctionCards'
 import axios from 'axios'
 import Typography from '@mui/material/Typography';
@@ -39,7 +39,6 @@ export default function HomePage() {
       .then((res) => {
         setAllAuctionItems(res.data);
         setAllDisplayItems(res.data);
-        // setPages(Math.ceil(res.data.length / pageResults));
       })
       .catch((err) => {
         console.log(err);

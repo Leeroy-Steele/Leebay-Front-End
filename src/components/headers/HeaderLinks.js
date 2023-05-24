@@ -2,7 +2,7 @@ import React from 'react'
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom'
-import { useAuth } from './Auth'  //For when logged in
+import { useAuth } from '../Auth'  //For when logged in
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 
@@ -13,7 +13,6 @@ export default function HeaderLinks(props) {
   const location = useLocation()
 
   const handleLogout = ()=>{
-    console.log('logout code block')
     auth.logout()
 
     const redirectPath = location.state?.path || '/'  //define where to navigate to after logout

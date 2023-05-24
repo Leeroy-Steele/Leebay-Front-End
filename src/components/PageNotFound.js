@@ -1,6 +1,6 @@
 import React from 'react'
-import PlainHeader from './PlainHeader'
-import HeaderLinks from './HeaderLinks'
+import PlainHeader from './headers/SearchHeader'
+import HeaderLinks from './headers/HeaderLinks'
 
 export default function PageNotFound() {
   return (

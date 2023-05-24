@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import PlainHeader from './PlainHeader'
-import HeaderLinks from './HeaderLinks'
+import PlainHeader from './headers/PlainHeader'
+import HeaderLinks from './headers/HeaderLinks'
 import BiddingOnAuctionCards from './cards/BiddingOnAuctionCards'
 import MyAuctionCards from './cards/MyAuctionCards'
 import WonAuctionCards from './cards/WonAuctionCards'

@@ -21,8 +21,8 @@ import { useAuth } from './Auth'  // Get userName
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 import { useNavigate, useLocation } from 'react-router-dom'
-import PlainHeader from './PlainHeader'
-import HeaderLinks from './HeaderLinks'
+import PlainHeader from './headers/PlainHeader'
+import HeaderLinks from './headers/HeaderLinks'
 
 const theme = createTheme();
 
